@@ -144,9 +144,11 @@ function lib:Window(text, preset, closebind)
     local uitoggled = false
     UserInputService.InputBegan:Connect(
         function(io, p)
-            if io.KeyCode == CloseBind then
-                Main.Visible = not Main.Visible
-            end
+            pcall(function()
+                if io.KeyCode == CloseBind then
+                    Main.Visible = not Main.Visible
+                end
+            end)
         end
     )
 
