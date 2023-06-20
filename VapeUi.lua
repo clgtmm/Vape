@@ -5,7 +5,7 @@ local RunService = game:GetService("RunService")
 local LocalPlayer = game:GetService("Players").LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local PresetColor = Color3.fromRGB(44, 120, 224)
-local CloseBind = Enum.KeyCode[_G.UiBind]
+local CloseBind = Enum.KeyCode.RightControl
 
 local ui = Instance.new("ScreenGui")
 ui.Name = "ui"
@@ -96,7 +96,6 @@ function lib:Window(text, preset, closebind)
     local TabFolder = Instance.new("Folder")
     local DragFrame = Instance.new("Frame")
 
-    game:GetService("UserInputService").InputBegan:Connect(onKeyPress)
     Main.Name = "Main"
     Main.Parent = ui
     Main.AnchorPoint = Vector2.new(0.5, 0.5)
@@ -142,19 +141,34 @@ function lib:Window(text, preset, closebind)
     MakeDraggable(DragFrame, Main)
 
     local uitoggled = false
-    pcall(function()
-        UserInputService.InputBegan:Connect(
-            function(io, p)
-                pcall(function()
-                    if io.KeyCode == CloseBind then
-                            pcall(function()
-                                ui.Enabled = not ui.Enabled
-                            end)
-                    end
-                end)
+    UserInputService.InputBegan:Connect(
+        function(io, p)
+            if io.KeyCode == CloseBind then
+                uitoggled = not uitoggled
+                if uitoggled then
+                  Main:TweenSize(
+                        UDim2.new(0, 0, 0, 0), 
+                        Enum.EasingDirection.Out, 
+                        Enum.EasingStyle.Quart, 
+                        .6, 
+                        true, 
+                        function()
+                            ui.Enabled = false
+                        end
+                    )
+                  else
+                        ui.Enabled = true
+                      Main:TweenSize(
+                        UDim2.new(0, 560, 0, 319),
+                        Enum.EasingDirection.Out,
+                        Enum.EasingStyle.Quart,
+                        .6,
+                        true
+                    )
+                  end
             end
-        )
-    end)
+        end
+    )
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
