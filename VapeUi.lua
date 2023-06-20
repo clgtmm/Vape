@@ -148,7 +148,7 @@ function lib:Window(text, preset, closebind)
                 pcall(function()
                     if io.KeyCode == CloseBind then
                             pcall(function()
-                                Main.Visible = not Main.Visible
+                                ui.Enabled = not ui.Enabled
                             end)
                     end
                 end)
