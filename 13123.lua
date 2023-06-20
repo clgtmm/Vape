@@ -141,38 +141,49 @@ function lib:Window(text, preset, closebind)
     MakeDraggable(DragFrame, Main)
 
     local uitoggled = false
-    UserInputService.InputBegan:Connect(
-        function(io, p)
-            if io.KeyCode == CloseBind then
-                uitoggled = not uitoggled
-                if uitoggled then
-                    spawn(function()
-                          Main:TweenSize(
-                                UDim2.new(0, 0, 0, 0), 
-                                Enum.EasingDirection.Out, 
-                                Enum.EasingStyle.Quart, 
-                                .6, 
-                                true, 
-                                function()
-                                    ui.Enabled = false
-                                end
-                            )
-                     end)
-                  else
-                    spawn(function()
-                      ui.Enabled = true
-                      Main:TweenSize(
+local debounce = false
+local debounceDelay = 0.1 -- Thời gian chờ giữa các lần nhấn liên tiếp (giây)
+
+UserInputService.InputBegan:Connect(
+    function(io, p)
+        if io.KeyCode == CloseBind and not debounce then
+            debounce = true -- Kích hoạt chế độ debounce
+
+            uitoggled = not uitoggled
+            if uitoggled then
+                spawn(function()
+                    Main:TweenSize(
+                        UDim2.new(0, 0, 0, 0), 
+                        Enum.EasingDirection.Out, 
+                        Enum.EasingStyle.Quart, 
+                        .6, 
+                        true, 
+                        function()
+                            ui.Enabled = false
+                            debounce = false -- Tắt chế độ debounce sau khi hoàn thành
+                        end
+                    )
+                end)
+            else
+                spawn(function()
+                    ui.Enabled = true
+                    Main:TweenSize(
                         UDim2.new(0, 560, 0, 319),
                         Enum.EasingDirection.Out,
                         Enum.EasingStyle.Quart,
                         .6,
                         true
-                      )
-                    end)
-                  end
+                    )
+                    debounce = false -- Tắt chế độ debounce sau khi hoàn thành
+                end)
             end
+
+            wait(debounceDelay) -- Đợi một khoảng thời gian trước khi cho phép nhấn lại
+            debounce = false -- Cho phép nhấn lại sau khi đã đủ thời gian chờ
         end
-    )
+    end
+)
+
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
