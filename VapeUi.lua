@@ -142,15 +142,19 @@ function lib:Window(text, preset, closebind)
     MakeDraggable(DragFrame, Main)
 
     local uitoggled = false
-    UserInputService.InputBegan:Connect(
-        function(io, p)
-            pcall(function()
-                if io.KeyCode == CloseBind then
-                    Main.Visible = not Main.Visible
-                end
-            end)
-        end
-    )
+    pcall(function()
+        UserInputService.InputBegan:Connect(
+            function(io, p)
+                pcall(function()
+                    if io.KeyCode == CloseBind then
+                            pcall(function()
+                                Main.Visible = not Main.Visible
+                            end)
+                    end
+                end)
+            end
+        )
+    end)
 
     TabFolder.Name = "TabFolder"
     TabFolder.Parent = Main
